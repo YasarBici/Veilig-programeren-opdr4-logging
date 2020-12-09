@@ -5,6 +5,11 @@
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    $ip = $_SERVER['REMOTE_ADDR'];
+
+    $logfile = "login_info.log";
+    $fh = fopen($logfile, "a") or die("Could not open log file.");
+
     $myConn = new DB;
 
     $check = "SELECT * FROM user WHERE `email`='$email' and `password`='$password'";
@@ -19,10 +24,16 @@
         if (!empty($result)) { 
             echo "<br> Login as $email <br>";
             echo "<br> This was a valid login attempt <br>";
+            fwrite($fh, date("d-m-Y, H:i")." - $ip"." - $email"." Succefully logged in.\n") or die("Could not write file!");
+            fclose($fh);
         } else {
             echo "<br> Invalid login! <br>";
+            fwrite($fh, date("d-m-Y, H:i")." - $ip"." - $email"." Failed to log in.\n") or die("Could not write file!");
+            fclose($fh);
         }
     }
+
+
 ?>
 
 <!DOCTYPE html>
